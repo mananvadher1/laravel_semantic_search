@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,12 +13,21 @@ class Category extends Model
 
     public static function generateEmbedding($text)
     {
-        $response = Http::withToken(env('OPENAI_API_KEY'))
-            ->post('https://api.openai.com/v1/embeddings', [
-                'model' => 'text-embedding-ada-002',
-                'input' => $text,
-            ]);
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . env('COHERE_API_KEY'),
+            'Content-Type' => 'application/json',
+        ])->post('https://api.cohere.ai/v1/embed', [
+            'model' => 'embed-english-v3.0',    // Valid model name
+            'texts' => [$text],
+            'input_type' => 'search_document', // Required by Cohere
+        ]);
 
-        return $response->json('data.0.embedding');
+        if ($response->successful()) {
+            return $response->json('embeddings.0');
+        }
+
+        // Log or throw error if embedding fails
+        Log::error('Cohere embedding failed', ['response' => $response->body()]);
+        return null;
     }
 }

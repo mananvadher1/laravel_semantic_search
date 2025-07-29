@@ -28,15 +28,17 @@ class ImportCategories extends Command
      */
     public function handle()
     {
-        Excel::import(new CategoriesImport, storage_path('app/Lynx_Keyword_Enhanced_Services.xlsx'));
+        Excel::import(new CategoriesImport, storage_path('app/categories.xlsx'));
 
         $categories = Category::whereNull('embedding')->get();
         foreach ($categories as $category) {
-            $text = $category->keywords ?? "{$category->main_category} {$category->sub_category} {$category->service}";
+            $text = "{$category->main_category} {$category->sub_category} {$category->service}";
             $embedding = Category::generateEmbedding($text);
 
-            $category->embedding = $embedding;
-            $category->save();
+            if ($embedding) {
+                $category->embedding = $embedding;
+                $category->save();
+            }
         }
 
         $this->info('Categories imported and embeddings generated.');

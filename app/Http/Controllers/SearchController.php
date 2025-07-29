@@ -21,15 +21,26 @@ class SearchController extends Controller
             return view('search')->with('results', []);
         }
 
-        // Generate embedding for query
-        $response = Http::withToken(env('OPENAI_API_KEY'))
-            ->post('https://api.openai.com/v1/embeddings', [
-                'model' => 'text-embedding-ada-002',
-                'input' => $query,
+        // === STEP 1: Get Cohere embedding for the user query ===
+        $response = Http::withToken(env('COHERE_API_KEY'))
+            ->withHeaders(['Content-Type' => 'application/json'])
+            ->post('https://api.cohere.ai/v1/embed', [
+                'model' => 'embed-english-v3.0',
+                'texts' => [$query],
+                'input_type' => 'search_query'
             ]);
 
-        $queryEmbedding = $response->json('data.0.embedding');
+        if (!$response->ok()) {
+            return back()->withErrors(['API error: ' . $response->body()]);
+        }
 
+        $queryEmbedding = $response->json('embeddings')[0] ?? null;
+
+        if (!$queryEmbedding) {
+            return back()->withErrors(['Failed to generate embedding.']);
+        }
+
+        // === STEP 2: Compare with all categories stored in DB ===
         $categories = Category::all();
         $results = [];
 
@@ -44,6 +55,7 @@ class SearchController extends Controller
             ];
         }
 
+        // Sort & return top 5 results
         usort($results, fn($a, $b) => $b['score'] <=> $a['score']);
         $topResults = array_slice($results, 0, 5);
 

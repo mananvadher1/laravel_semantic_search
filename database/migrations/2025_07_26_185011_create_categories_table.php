@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('main_category');
             $table->string('sub_category')->nullable();
             $table->string('service')->nullable();
-            $table->text('keywords')->nullable();
             $table->json('embedding')->nullable();
             $table->timestamps();
         });

@@ -5,6 +5,7 @@
     <h2>Semantic Search</h2>
 
     <form method="POST" action="{{ route('search') }}">
+        <?php // echo "<pre>"; print_r(old('query', $query ?? '')); exit; ?>
         @csrf
         <input type="text" name="query" value="{{ old('query', $query ?? '') }}" placeholder="Describe your need..." class="form-control mb-2">
         <button type="submit" class="btn btn-primary">Search</button>
