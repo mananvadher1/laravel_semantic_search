@@ -49,7 +49,7 @@ The application uses **AI-generated embeddings** (OpenAI or Cohere) to convert c
 ### 1️⃣ Clone the Repository
 
 ```bash
-git clone https://github.com/mananvadher1/laravel-semantic-search.git
+git clone https://github.com/mananvadher1/laravel_semantic_search.git
 cd laravel-semantic-search
 ```
 
