@@ -53,11 +53,11 @@ git clone https://github.com/mananvadher1/laravel-semantic-search.git
 cd laravel-semantic-search
 ```
 
-### 2️⃣ Install Dependencies
+### 2️⃣ Install PHP Dependencies
 
 ```bash
 composer install
-npm install && npm run dev
+composer require maatwebsite/excel
 ```
 
 ### 3️⃣ Environment Setup
@@ -67,10 +67,9 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-Update the `.env` file with:
-
-- Database credentials  
-- `OPENAI_API_KEY` **or** `COHERE_API_KEY`  
+🔹 **Why run `php artisan key:generate`?**  
+Laravel uses the **APP_KEY** in `.env` to securely encrypt session data, cookies, and other sensitive information.  
+Running this command generates a unique 32-character key and automatically sets it in `.env`.
 
 ### 4️⃣ Run Database Migrations
 
@@ -153,7 +152,7 @@ The application will return the **closest matching category**.
 ## 📬 Contact
 
 Developed by **Manan Vadher**  
-📧 [manan.vadher@drcsystems.com](mailto:manan.vadher@drcsystems.com)
+📧 [mananvadher1@gmail.com](mailto:mananvadher1@gmail.com)
 
 ---
 
